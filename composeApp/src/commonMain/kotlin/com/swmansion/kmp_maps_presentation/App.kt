@@ -1,49 +1,50 @@
 package com.swmansion.kmp_maps_presentation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.painterResource
+import com.swmansion.kmpmaps.CameraPosition
+import com.swmansion.kmpmaps.Circle
+import com.swmansion.kmpmaps.Coordinates
+import com.swmansion.kmpmaps.Map
+import com.swmansion.kmpmaps.Marker
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-import kmpmapspresentation.composeapp.generated.resources.Res
-import kmpmapspresentation.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
+    Map(
+        modifier = Modifier.fillMaxSize(),
+        cameraPosition = CameraPosition(
+            coordinates = Coordinates(latitude = 50.0619, longitude = 19.9373),
+            zoom = 13f
+        ),
+        markers = listOf(
+            Marker(
+                coordinates = Coordinates(latitude = 50.0486, longitude = 19.9654),
+                title = "Software Mansion",
+                androidSnippet = "Software house"
+            )
+        ),
+        circles = listOf(
+            Circle(
+                center = Coordinates(latitude = 50.0486, longitude = 19.9654),
+                radius = 500.0f,
+                lineColor = MaterialTheme.colorScheme.primary,
+                lineWidth = 1f,
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+            ),
+        ),
+        onMarkerClick = { marker ->
+            println("Marker clicked: ${marker.title}")
+        },
+        onMapClick = { coordinates ->
+            println("Map clicked at: ${coordinates.latitude}, ${coordinates.longitude}")
+        },
+        onCircleClick = { circle ->
+            println("Circle clicked: ${circle.center.latitude}, ${circle.center.longitude}")
         }
-    }
+    )
 }
